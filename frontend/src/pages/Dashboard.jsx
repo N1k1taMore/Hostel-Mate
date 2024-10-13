@@ -4,6 +4,7 @@ import NavbarS from "./NavbarS";
 import Complaint from "./Complaint";
 import WardenComplaints from "./WardenComplaint";
 import { GetAuthHeader } from "../testing/Headers";
+import axios from 'axios';
 
 function Dashboard() {
   const [userType, setUserType] = useState(null);
@@ -13,20 +14,19 @@ function Dashboard() {
    
     const fetchUserType = async () => {
       try {
-        const response = await fetch("http://localhost:3000/userType", {
-          method: "GET",
-          headers: GetAuthHeader(),
+        const response = await axios.get("http://localhost:3000/userType", {
+          headers: GetAuthHeader()
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserType(data.userType);
-        } else {
-          console.error('Failed to fetch user type');
-        }
+      
+        setUserType(response.data.userType);
       } catch (error) {
-        console.error(error.message);
+        if (error.response) {
+          console.error('Failed to fetch user type');
+        } else {
+          console.error(error.message);
+        }
       }
+      
     };
 
     fetchUserType();

@@ -1,19 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../utils/Auth';
 import NavbarS from './NavbarS';
+import axios from 'axios';
 
-const formatTimestamp = (timestamp) => {
-  const date = new Date(timestamp);
-  const options = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-  };
-  return new Intl.DateTimeFormat('en-US', options).format(date);
-};
 
 const formatTimestamp1 = (timestamp) => {
   const date = new Date(timestamp);
@@ -26,7 +15,7 @@ const formatTimestamp1 = (timestamp) => {
 };
 
 const LeaveForm = () => {
-  const { authToken, headers } = useAuth();
+  const { headers } = useAuth();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [room, setRoom] = useState('');
@@ -49,15 +38,13 @@ const LeaveForm = () => {
 
     try {
       const body = { name, description, room };
-      const response = await fetch('http://localhost:3000/leaves', {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify(body),
-      });
+      const response = await axios.post('http://localhost:3000/leaves', body, { headers });
+      
       window.location = '/leave';
     } catch (err) {
       console.error(err.message);
     }
+    
   };
 
   return (
@@ -111,19 +98,16 @@ const Leave = () => {
 
   const getLeaves = async () => {
     try {
-      const response = await fetch('http://localhost:3000/leaves', {
-        method: 'GET',
-        headers: headers,
+      const response = await axios.get('http://localhost:3000/leaves', {
+        headers: headers
       });
-      if (!response.ok) {
-        throw new Error(`Error fetching complaints: ${response.status}`);
-      }
-
-      const jsonData = await response.json();
+    
+      const jsonData = response.data; // Access the response data directly
       setLeaves(jsonData);
     } catch (err) {
-      console.error(err.message);
+      console.error(`Error fetching leaves: ${err.message}`);
     }
+    
   };
 
   useEffect(() => {

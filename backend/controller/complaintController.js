@@ -10,7 +10,7 @@ app.use(express.json());
 const decodeUser = async (token) => {
   try {
     const decodedToken = jwtDecoder(token);
-    console.log(decodedToken);
+  //  console.log(decodedToken);
 
     const { user_id, type } = decodedToken.user;
     let userInfo;
@@ -23,7 +23,7 @@ const decodeUser = async (token) => {
       `;
 
       const result = await db.pool.query(query, [user_id]);
-      console.log(result.rows);
+      //console.log(result.rows);
       if (result.rows.length > 0) {
         userInfo = result.rows[0];
       }
@@ -52,7 +52,7 @@ const decodeUser = async (token) => {
 exports.postComplaints = async (req, res) => {
   try {
     const token = req.headers.authorization;
-    console.log(token);
+    //console.log(token);
     const userInfo = await decodeUser(token);
 
     const { student_id, block_id } = userInfo;
@@ -132,9 +132,9 @@ exports.getAllComplaintsByUser = async (req, res) => {
 exports.getUserType = async (req, res) => {
   try {
     const token = req.headers.authorization;
-    console.log(token);
+    //console.log(token);
     const decodedToken = jwtDecoder(token);
-    console.log(decodedToken);
+   // console.log(decodedToken);
     const { type } = decodedToken.user;
 
     res.json({ userType: type });
@@ -147,16 +147,16 @@ exports.getUserType = async (req, res) => {
 exports.getUserDetails = async (req, res) => {
   try {
     const token = req.headers.authorization;
-    console.log(token);
+   // console.log(token);
     const decodedToken = jwtDecoder(token);
-    console.log(decodedToken);
+   // console.log(decodedToken);
     const { user_id, type } = decodedToken.user;
 
-    console.log("Decoded Token:", decodedToken);
+    // console.log("Decoded Token:", decodedToken);
 
-    console.log("User Type:", type);
+    // console.log("User Type:", type);
 
-    console.log("User ID:", user_id);
+    // console.log("User ID:", user_id);
 
     if (type == "student") {
       const studentDetails = await db.pool.query(

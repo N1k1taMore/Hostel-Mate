@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
 
 function Login() {
@@ -9,26 +10,28 @@ function Login() {
   const onSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const body = { email, password };
-      const response = await fetch("http://localhost:3000/login", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      console.log(response);
-      const data = await response.json();
-      console.log(data);
-
-      if (data.jwtToken) {
-        localStorage.setItem("jwtToken", data.jwtToken);
-        navigate("/");
-      } else {
-        alert("Invalid credentials. Please check your email and password.");
+      try {
+        const body = { email, password };
+        const response = await axios.post('http://localhost:3000/login', body, {
+          headers: { "Content-Type": "application/json" }
+        });
+      
+        console.log(response);
+        const data = response.data; // Access response data directly
+        console.log(data);
+        if (data.jwtToken) {
+          localStorage.setItem("jwtToken", data.jwtToken);
+          navigate("/"); 
+        } 
+        else {
+          alert("Invalid credentials. Please check your email and password.");
+        }
+      } catch (err) {
+        // Improved error handling
+          alert(err.response.data.message || "An error occurred. Please try again.");
       }
-    } catch (err) {
-      console.log(err.message);
-    }
+      
+    
   };
 
   return (

@@ -44,7 +44,7 @@ create table if not exists complaint (
     foreign key (block_id) references block(block_id) on delete cascade
 );
 
-create tabel if not exists leave(
+create table if not exists leave(
     id SERIAL PRIMARY KEY,
     name text,
     block_id int,

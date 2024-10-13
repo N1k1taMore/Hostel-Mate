@@ -1,5 +1,6 @@
 import  { useState, useEffect } from "react";
 import { useAuth } from "../utils/Auth";
+import axios from 'axios';
 
 const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp);
@@ -29,24 +30,23 @@ const WardenComplaints = () => {
 
   const getComplaints = async () => {
     try {
-      const response = await fetch("http://localhost:3000/complaints", {
-        method: "GET",
-        headers: headers,
+      // Fetching complaints
+      const response = await axios.get("http://localhost:3000/complaints", {
+        headers: headers
       });
-      const jsonData = await response.json();
-
+      const jsonData = response.data; 
       setComplaints(jsonData);
     } catch (err) {
-      console.error(err.message);
+      console.error("Error fetching complaints:", err.message);
     }
   };
 
   const handleApproval = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/complaints/${id}`, {
-        method: "POST",
-        headers: headers,
+      const response = await axios.post(`http://localhost:3000/complaints/${id}`, {}, {
+        headers: headers
       });
+      
 
       console.log(response);
       window.location = "/";
@@ -61,18 +61,19 @@ const WardenComplaints = () => {
 
   const deleteComplaint = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/complaints/${id}`, {
-        method: "DELETE",
-        headers: headers,
+      // Deleting a complaint
+      const response = await axios.delete(`http://localhost:3000/complaints/${id}`, {
+        headers: headers
       });
-
-      if (response.ok) {
+    
+      if (response.status === 200) { 
         setComplaints(complaints.filter((complaint) => complaint.id !== id));
-      } else {
+      } 
+      else {
         console.error("Failed to delete complaint");
       }
     } catch (error) {
-      console.error("Error deleting complaint:", error);
+      console.error("Error deleting complaint:", error.message);
     }
   };
 

@@ -1,5 +1,6 @@
 import  { useState, useEffect } from "react";
 import { useAuth } from "../utils/Auth";
+import axios from 'axios';
 
 const formatTimestamp = (timestamp) => {
   const date = new Date(timestamp);
@@ -25,7 +26,7 @@ const formatTimestamp1 = (timestamp) => {
 };
 
 const ComplaintForm = () => {
-  const { authToken, headers } = useAuth();
+  const { headers } = useAuth();
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [room, setRoom] = useState("");
@@ -48,11 +49,10 @@ const ComplaintForm = () => {
 
     try {
       const body = { name, description, room };
-      const response = await fetch("http://localhost:3000/complaints", {
-        method: "POST",
-        headers: headers,
-        body: JSON.stringify(body),
+      const response = await axios.post("http://localhost:3000/complaints", body, {
+        headers: headers
       });
+      
       window.location = "/";
     } catch (err) {
       console.error(err.message);
@@ -203,19 +203,16 @@ const Complaint = () => {
 
   const getComplaints = async () => {
     try {
-      const response = await fetch("http://localhost:3000/complaints", {
-        method: "GET",
-        headers: headers,
+      const response = await axios.get("http://localhost:3000/complaints", {
+        headers: headers
       });
-      if (!response.ok) {
-        throw new Error(`Error fetching complaints: ${response.status}`);
-      }
-
-      const jsonData = await response.json();
-      setComplaints(jsonData);
-    } catch (err) {
-      console.error(`Error fetching complaints: ${err.message}`);
+      
+      setComplaints(response.data);
+    } catch (error) {
+      console.error(`Error fetching complaints: ${error.response?.status}`);
+      throw new Error(`Error fetching complaints: ${error.response?.status}`);
     }
+    
   };
 
   useEffect(() => {

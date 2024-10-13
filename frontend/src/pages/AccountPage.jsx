@@ -3,6 +3,7 @@ import NavbarS from "./NavbarS";
 import { useState, useEffect } from "react";
 import { useAuth } from "../utils/Auth";
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 function AccountPage() {
   const { headers } = useAuth();
@@ -17,21 +18,17 @@ function AccountPage() {
   useEffect(() => {
     const fetchUserType = async () => {
       try {
-        const response = await fetch("http://localhost:3000/userType", {
-          method: "GET",
-          headers: headers,
+        const response = await axios.get("http://localhost:3000/userType", {
+          headers: headers
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUserType(data.userType);
-          console.log(data.userType);
-        } else {
-          console.error("Failed to fetch user type");
-        }
+      
+        const data = response.data; // Get the response data directly
+        setUserType(data.userType);
+        console.log(data.userType);
       } catch (error) {
-        console.error(error.message);
+        console.error("Failed to fetch user type:", error.message);
       }
+      
     };
 
     fetchUserType();
@@ -39,23 +36,23 @@ function AccountPage() {
 
   const getuserDetails = async (user_id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/userDetails/${user_id}`,
-        {
-          method: "GET",
-          headers: headers,
-        }
-      );
-      const data = await response.json();
+      const response = await axios.get(`http://localhost:3000/userDetails/${user_id}`, {
+        headers: headers
+      });
+    
+      const data = response.data; // Get the response data directly
       console.log(data);
+      
+      // Assuming data is an array, you can access the first element
       setUserName(data[0].full_name);
       setemail(data[0].email);
       setphone(data[0].phone);
       setRoom(data[0].room);
       setblockID(data[0].block_id);
       setblockname(data[0].block_name);
-    } catch (err) {
-      console.error(err.message);
+    } 
+    catch (error) {
+      console.error("Error fetching user details:", error.message);
     }
   };
 

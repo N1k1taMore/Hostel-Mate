@@ -1,16 +1,16 @@
-import  { useState, useEffect } from "react";
-import { useAuth } from "../utils/Auth";
-import Navbar from "./Navbar";
-
+import { useState, useEffect } from 'react';
+import { useAuth } from '../utils/Auth';
+import Navbar from './Navbar';
+import axios from 'axios';
 
 const formatTimestamp1 = (timestamp) => {
   const date = new Date(timestamp);
   const options = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
   };
-  return new Intl.DateTimeFormat("en-US", options).format(date);
+  return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
 const WardenLeave = () => {
@@ -19,18 +19,19 @@ const WardenLeave = () => {
 
   const getLeaves = async () => {
     try {
-      const response = await fetch("http://localhost:3000/leaves", {
-        method: "GET",
+      // Fetching leaves
+      const response = await axios.get('http://localhost:3000/leaves', {
         headers: headers,
       });
-      const jsonData = await response.json();
-
+    
+      const jsonData = response.data; // Axios automatically parses the response
       setLeaves(jsonData);
-    } catch (err) {
-      console.error(err.message);
+    } 
+    catch (err) {
+     
+      console.error("Error fetching leaves:", err.message);
     }
   };
-
 
   useEffect(() => {
     getLeaves();
@@ -38,8 +39,8 @@ const WardenLeave = () => {
 
   return (
     <>
-    <Navbar></Navbar>
-      
+      <Navbar></Navbar>
+
       <div className="mt-20 bg-gray-100 p-4 sm:p-8 md:p-2 h-screen">
         <h1 className="text-2xl font-bold mt-3 mb-8 pl-5">Leaves</h1>
         {leaves.length === 0 ? (
@@ -59,11 +60,10 @@ const WardenLeave = () => {
                 <p className="text-sm">
                   Created on {formatTimestamp1(leave.created_at)}
                 </p>
-                
+
                 <div className="text-md leading-normal text-gray-400 sm:block">
                   {leave.description}
                 </div>
-             
               </div>
             ))}
           </div>

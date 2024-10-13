@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { Roles } from "../constants";
 import { useState } from "react";
+import axios from 'axios';
 
 function Register() {
   const navigate = useNavigate()
@@ -16,6 +17,8 @@ function Register() {
     e.preventDefault();
     try {
       let body;
+    
+      // Construct the request body based on the user role
       if (role === Roles.WARDEN) {
         body = {
           full_name: fullname,
@@ -36,23 +39,30 @@ function Register() {
           room,
         };
       }
-      const response = await fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: { "content-type": "application/json " },
-        body: JSON.stringify(body),
+    
+      // Send the POST request to the registration endpoint
+      const response = await axios.post("http://localhost:3000/register", body, {
+        headers: { "Content-Type": "application/json" }
       });
+    
       console.log(response);
-      const data = await response.json();
+      
+      // Access the response data
+      const data = response.data; 
       console.log(data);
+    
+      // Check if the JWT token exists in the response
       if (data.jwtToken) {
-        alert("User registered successfully,login to proceed");
-        navigate('/login')
+        alert("User registered successfully, login to proceed");
+        navigate('/login');
       } else {
-        alert("user already exists");
+        alert("User already exists");
       }
     } catch (err) {
-      console.log(err.message);
+      // Improved error handling to show detailed messages
+      console.log("Error:", err.response ? err.response.data : err.message);
     }
+    
   };
 
   return (

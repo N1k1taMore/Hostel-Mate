@@ -38,7 +38,7 @@ exports.Admission = async (req, res) => {
 
     const jwtToken = jwtGenerator(newResident.rows[0].resident_id);
 
-    console.log(jwtDecoder(jwtToken));
+    //console.log(jwtDecoder(jwtToken));
     return res.json({ jwtToken });
   } catch (err) {
     console.error(err.message);

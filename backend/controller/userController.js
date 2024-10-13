@@ -33,8 +33,8 @@ exports.userRegister = async (req, res) => {
     );
 
     if (type === "student") {
-      const { block_id, usn, room } = req.body;
-      console.log(newUser.rows);
+      const { block_id, room } = req.body;
+    //  console.log(newUser.rows);
       await db.pool.query(
         "INSERT INTO student (student_id, block_id, room) VALUES ($1, $2, $3)",
         [newUser.rows[0].user_id, block_id, room]
@@ -46,10 +46,10 @@ exports.userRegister = async (req, res) => {
         [newUser.rows[0].user_id, block_id]
       );
     }
-    console.log(jwtDecoder(jwtToken));
+   // console.log(jwtDecoder(jwtToken));
     return res.json({ jwtToken });
   } catch (err) {
-    console.error(err.message);
+   // console.error(err.message);
     res.status(500).send("Server error");
   }
 };
@@ -72,10 +72,10 @@ exports.userLogin = async (req, res) => {
       return res.status(401).json("Invalid Credential");
     }
     const jwtToken = jwtGenerator(user.rows[0].user_id, user.rows[0].type);
-    console.log(jwtDecoder(jwtToken));
+    //console.log(jwtDecoder(jwtToken));
     return res.json({ jwtToken });
   } catch (err) {
-    console.error(err.message);
+    //console.error(err.message);
     res.status(500).send("Server error");
   }
 };
